@@ -1,0 +1,104 @@
+# System Configuration for Real-time Monocular Depth SLAM
+system:
+  name: "Real-time Monocular Depth SLAM"
+  version: "1.0.0"
+  debug: false
+
+# Camera Configuration
+camera:
+  width: 640
+  height: 480
+  fps: 30
+  device_id: 0
+  api_preference: "CAP_DSHOW"  # Windows DirectShow
+
+# MiDaS Depth Estimation
+midas:
+  model_type: "DPT_Hybrid"  # DPT_Large, DPT_Hybrid, MiDaS_small
+  optimize: true
+  height: 384
+  square: false
+  grayscale: false
+
+# YOLOv8 Configuration
+yolo:
+  model_size: "yolov8n.pt"  # yolov8n.pt, yolov8s.pt, yolov8m.pt, yolov8l.pt, yolov8x.pt
+  confidence_threshold: 0.5
+  iou_threshold: 0.45
+  max_detections: 100
+  track_objects: true
+  track_buffer: 30
+
+# Point Cloud Processing
+point_cloud:
+  # Voxel grid downsampling
+  voxel_size: 0.01  # meters
+
+  # Statistical outlier removal
+  outlier_neighbors: 50
+  outlier_std_ratio: 1.0
+
+  # Kalman filtering
+  kalman_process_noise: 0.01
+  kalman_measurement_noise: 0.1
+
+# SLAM Configuration
+slam:
+  # Feature detection
+  feature_detector: "ORB"
+  num_features: 1000
+
+  # Keyframe selection
+  keyframe_distance: 0.1  # meters
+  keyframe_angle: 10  # degrees
+
+  # Bundle adjustment
+  bundle_adjustment: true
+  ba_iterations: 10
+
+# Visualization
+visualization:
+  # 3D Point Cloud Viewer
+  point_cloud_window: "3D Point Cloud Viewer"
+  point_cloud_width: 800
+  point_cloud_height: 600
+
+  # Analytical View
+  analytical_window: "Analytical View"
+  analytical_width: 1200
+  analytical_height: 800
+
+  # Rendering options
+  point_size: 2.0
+  background_color: [0.1, 0.1, 0.1]
+  show_axes: true
+  show_grid: true
+
+# Performance Optimization
+performance:
+  target_fps: 30
+  gpu_memory_fraction: 0.8
+  enable_cuda: true
+  num_threads: 4
+  queue_size: 10
+
+# Error Analysis
+error_analysis:
+  enable_edge_detection: true
+  edge_detection_threshold: 0.1
+  enable_error_marking: true
+  error_threshold: 0.05  # meters
+  max_error_points: 1000
+
+# Semantic Segmentation
+semantic:
+  enable_segmentation: true
+  num_classes: 150  # ADE20K classes
+  segmentation_threshold: 0.7
+
+# File Paths
+paths:
+  models_dir: "models"
+  logs_dir: "logs"
+  output_dir: "output"
+  cache_dir: "cache"

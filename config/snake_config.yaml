@@ -1,0 +1,306 @@
+# Snake-Specific Configuration for Robotic Snake System
+# This file contains all parameters specific to the 10-joint MG996R robotic snake
+
+snake:
+  # Physical specifications
+  physical:
+    num_joints: 10
+    joint_length: 0.08  # meters per joint
+    total_length: 0.8   # total snake length in meters
+    joint_mass: 0.05    # kg per joint
+    total_mass: 0.5     # total snake mass in kg
+
+  # Servo specifications (MG996R)
+  servos:
+    servo_type: "MG996R"
+    pulse_width_min: 500    # microseconds
+    pulse_width_max: 2500   # microseconds
+    pulse_width_neutral: 1500  # microseconds
+    angle_range: 180        # degrees (-90 to +90)
+    max_velocity: 360       # degrees per second
+    max_torque: 9.4         # kg-cm
+
+    # PID control parameters for each servo
+    pid_position:
+      kp: 1.0
+      ki: 0.1
+      kd: 0.05
+
+    pid_velocity:
+      kp: 2.0
+      ki: 0.2
+      kd: 0.0
+
+  # Kinematic parameters
+  kinematics:
+    # Joint angle limits
+    joint_limits:
+      min_angle: -90.0    # degrees
+      max_angle: 90.0     # degrees
+
+    # Velocity limits
+    velocity_limits:
+      max_angular_velocity: 360.0  # degrees/second
+      max_linear_velocity: 0.5     # m/s
+
+    # Snake movement parameters
+    movement:
+      wave_number: 2.0           # Number of waves along snake body
+      amplitude_scale: 1.0       # Scale factor for movement amplitude
+      frequency_range: [0.5, 2.0] # Hz range for locomotion frequency
+
+  # Dynamic parameters
+  dynamics:
+    # Friction and contact parameters
+    friction:
+      static_friction: 0.3
+      dynamic_friction: 0.2
+      surface_adaptation: true
+
+    # Energy and power parameters
+    power:
+      max_power_consumption: 10.0  # Watts
+      efficiency_factor: 0.7       # Mechanical efficiency
+      battery_capacity: 2200       # mAh
+
+    # Inertia and mass distribution
+    inertia:
+      joint_inertia: 0.001  # kg*m² per joint
+      snake_inertia_tensor: [[0.01, 0, 0], [0, 0.01, 0], [0, 0, 0.02]]
+
+  # Locomotion patterns
+  locomotion:
+    # Serpentine locomotion
+    serpentine:
+      default_amplitude: 45.0     # degrees
+      default_frequency: 1.0      # Hz
+      phase_lag: 36.0             # degrees between adjacent joints
+
+    # Sidewinding locomotion
+    sidewinding:
+      lateral_amplitude: 30.0     # degrees
+      vertical_amplitude: 15.0    # degrees
+      frequency_ratio: 1.5        # Frequency multiplier
+
+    # Concertina locomotion
+    concertina:
+      anchor_segments: 3          # Number of segments used for anchoring
+      extension_ratio: 1.3        # How much to extend during movement
+
+    # Rolling locomotion
+    rolling:
+      roll_angle: 90.0           # degrees
+      roll_frequency: 0.8        # Hz
+
+  # Navigation parameters
+  navigation:
+    # Safety and obstacle avoidance
+    safety:
+      min_obstacle_distance: 0.2    # meters
+      reaction_time: 0.1            # seconds
+      safety_margin: 1.2            # Safety factor
+
+    # Path planning
+    path_planning:
+      planning_horizon: 2.0         # meters
+      replan_threshold: 0.3         # meters deviation before replanning
+      max_turn_rate: 45.0           # degrees/second
+
+    # Goal reaching
+    goal_reaching:
+      position_tolerance: 0.1       # meters
+      orientation_tolerance: 5.0    # degrees
+      max_goal_age: 300.0           # seconds
+
+  # Vision and perception
+  vision:
+    # Camera parameters
+    camera:
+      mount_position: "head"        # head, middle, tail
+      field_of_view: 60.0          # degrees
+      resolution: [640, 480]       # pixels
+      frame_rate: 30               # FPS
+
+    # Depth estimation
+    depth:
+      model_type: "DPT_Hybrid"     # DPT_Large, DPT_Hybrid, MiDaS_small
+      max_range: 5.0               # meters
+      min_range: 0.1               # meters
+      accuracy_threshold: 0.05     # meters
+
+    # Object detection
+    object_detection:
+      model_size: "yolov8n.pt"     # yolov8n.pt, yolov8s.pt, etc.
+      confidence_threshold: 0.5
+      detection_classes: ["person", "obstacle", "terrain"]  # Classes to detect
+
+  # Environment adaptation
+  environment:
+    # Terrain classification
+    terrain:
+      classification_enabled: true
+      update_rate: 5.0             # Hz
+      adaptation_rate: 0.1         # How quickly to adapt
+
+    # Environment types and their parameters
+    environment_types:
+      indoor_smooth:
+        friction_factor: 0.8
+        speed_multiplier: 1.0
+        energy_factor: 1.0
+
+      indoor_rough:
+        friction_factor: 1.2
+        speed_multiplier: 0.8
+        energy_factor: 1.3
+
+      outdoor_flat:
+        friction_factor: 0.9
+        speed_multiplier: 1.1
+        energy_factor: 1.1
+
+      outdoor_uneven:
+        friction_factor: 1.4
+        speed_multiplier: 0.6
+        energy_factor: 1.5
+
+      underground:
+        friction_factor: 1.1
+        speed_multiplier: 0.7
+        energy_factor: 1.2
+
+      aquatic:
+        friction_factor: 0.3
+        speed_multiplier: 0.5
+        energy_factor: 2.0
+
+  # Control system parameters
+  control:
+    # Main control loop
+    control_loop:
+      update_rate: 50.0            # Hz
+      timeout_threshold: 0.1       # seconds
+
+    # Integration modes
+    integration:
+      use_cpg: true               # Use CPG for locomotion
+      use_trajectory: true        # Use quintic trajectories
+      use_navigation: true        # Use autonomous navigation
+
+    # Synchronization
+    synchronization:
+      max_phase_error: 5.0        # degrees
+      sync_update_rate: 10.0      # Hz
+
+  # Performance monitoring
+  monitoring:
+    # Metrics to track
+    metrics:
+      position_tracking: true
+      velocity_tracking: true
+      power_consumption: true
+      efficiency_metrics: true
+      error_rates: true
+
+    # Logging configuration
+    logging:
+      log_level: "INFO"
+      log_rate: 1.0               # Hz
+      save_to_file: true
+      max_log_age: 24             # hours
+
+  # Safety systems
+  safety:
+    # Emergency stop conditions
+    emergency_stop:
+      max_temperature: 60.0       # Celsius
+      max_current: 2.0            # Amps
+      max_angle_deviation: 100.0  # degrees
+      stall_detection_time: 2.0   # seconds
+
+    # Fail-safe behaviors
+    fail_safe:
+      emergency_stop_enabled: true
+      return_to_neutral: true
+      signal_lost_behavior: "stop"
+
+  # Communication parameters
+  communication:
+    # Serial communication
+    serial:
+      port: "/dev/ttyUSB0"
+      baud_rate: 115200
+      timeout: 0.1
+
+    # Network communication (if applicable)
+    network:
+      enable_tcp: false
+      tcp_port: 8080
+      enable_udp: false
+      udp_port: 8081
+
+  # Calibration parameters
+  calibration:
+    # Servo calibration
+    servo_calibration:
+      auto_calibrate: true
+      calibration_time: 5.0       # seconds per servo
+      tolerance: 1.0              # degrees
+
+    # System calibration
+    system_calibration:
+      full_calibration_time: 60.0 # seconds
+      verify_accuracy: true
+
+  # Testing and validation
+  testing:
+    # Test patterns
+    test_patterns:
+      range_test: true
+      load_test: true
+      endurance_test: true
+      accuracy_test: true
+
+    # Validation thresholds
+    validation:
+      position_accuracy: 2.0      # degrees
+      velocity_accuracy: 10.0     # degrees/second
+      repeatability: 1.0          # degrees
+
+# Integration with main system
+integration:
+  # How snake-specific parameters override general system parameters
+  parameter_priority: "snake_specific"  # snake_specific, system_default, adaptive
+
+  # Module enable/disable
+  modules:
+    quintic_polynomial: true
+    cpg_model: true
+    servo_control: true
+    navigation: true
+    environment_optimization: true
+
+  # Real-time performance targets
+  performance_targets:
+    control_latency: 0.02       # seconds
+    trajectory_accuracy: 0.95   # 95% accuracy
+    navigation_success_rate: 0.9 # 90% success rate
+
+# Development and debugging
+development:
+  # Debug options
+  debug:
+    enable_debug_mode: false
+    verbose_logging: false
+    save_debug_data: true
+
+  # Simulation options
+  simulation:
+    enable_simulation: false
+    physics_engine: "bullet"    # bullet, mujoco, pybullet
+    real_time_factor: 1.0
+
+  # Hardware interface
+  hardware:
+    mock_hardware: false        # Set to true for software testing
+    hardware_interface: "serial" # serial, network, simulation
